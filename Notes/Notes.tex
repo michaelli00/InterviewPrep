@@ -1,0 +1,239 @@
+%latexmk -pdf -pvc Notes
+\documentclass{article}
+\setlength{\oddsidemargin}{6pt}
+\setlength{\textwidth}{440pt}
+\vspace{-8ex}
+\usepackage{mathtools}
+\usepackage{enumitem}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\usepackage{listings}
+\usepackage{amsmath}
+\usepackage{color}
+\usepackage{graphicx}
+\usepackage[left=0.70in, right=0.70in, top=0.50in, left=0.70in, headsep=0pt]{geometry}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=black
+}
+\graphicspath{ {./assets/} }
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=Java,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+}
+
+\title{Programming Interview Notes}
+\date{}
+\begin{document} 
+  \author{Michael Li}
+  \title{Programming Interview Notes}
+  \maketitle
+  \tableofcontents
+  \newpage
+  \section{DFS}
+  \begin{lstlisting}
+  stack.push(element);
+  while(!stack.isEmpty()) {
+    T curr = stack.pop();
+    for (e : adj(curr)) {
+      if(!visited[e]) {
+        visited[e] = true;        //Keep track of unvisited using array
+        stack.push(e); 
+      }
+    }
+  }
+  \end{lstlisting}
+  For graphs, need to figure out to use visited array to match requirements\\
+  \href{https://leetcode.com/problems/number-of-connected-components-in-an-undirected-graph/}{323. Number of Connected Components in an Undirected Graph
+} \quad \href{https://leetcode.com/problems/number-of-islands/}{200. Number of Islands
+} \quad \href{https://leetcode.com/problems/friend-circles/description/}{547. Friend Circles
+}
+  \section{BFS}
+  \begin{lstlisting}
+  queue.add(element);
+  while(!queue.isEmpty()) {
+    T curr = queue.poll();
+    for (e : adj(curr)) {
+      if(!visited[e]) {
+        visited[e] = true;      //keep track of unvisited using array
+        queue.add(e);
+      }
+    }
+  }
+  \end{lstlisting}
+  Key issue to recognize when to use DFS (look at deep as possible first) or BFS (process neighbors first because going deep first might be inefficient)\\
+  \href{https://leetcode.com/problems/binary-tree-level-order-traversal/}{102. Binary Tree Level Order Traversal} \quad \href{https://leetcode.com/problems/01-matrix/}{542. 01 Matrix}
+  \section{Tree Traversal (DFS on Trees)}
+  \subsection{Preorder Traversal}
+  root, Left, Right
+  \begin{lstlisting}
+  public List<Integer> preorderTraversal(TreeNode root) {
+    List<Integer> list = new ArrayList();
+    if(root == null) return list;
+    Stack<TreeNode> stack = new Stack();
+    stack.push(root);
+    
+    while(!stack.isEmpty()) {
+      TreeNode curr = stack.pop();
+      list.add(curr.val);
+      if(curr.right != null) stack.push(curr.right);
+      if(curr.left != null) stack.push(curr.left);
+    }
+    return list;
+  }
+  \end{lstlisting}
+  \href{https://leetcode.com/problems/binary-tree-preorder-traversal/}{144. Binary Tree Preorder Traversal}
+  \subsection{Inorder Traversal}
+  Left, root, Right \\
+  Useful when you need to iterate through a tree inorder or retrieve the kth element
+  \begin{lstlisting}
+  public List<Integer>> inorderTraversal(TreeNode root) {
+    List<Integer> list = new ArrayList();
+    if(root == null) return list;
+    
+    Stack<TreeNode> stack = new Stack();      //Use stack for DFS
+    while(root != null && !stack.isEmpty()) {
+      while(root != null) {                   //Find left-most element
+        stack.push(root);
+        root = root.left;
+      }
+      root = stack.pop();
+      list.add(root.val);
+      root = root.right;                      //Look at left-most element's right child
+    }
+  }
+  \end{lstlisting}
+  \href{https://leetcode.com/problems/binary-tree-inorder-traversal/description/}{94. Binary Tree Inorder Traversal} \quad \href{https://leetcode.com/problems/validate-binary-search-tree/}{98. Validate Binary Search Tree} \quad \href{https://leetcode.com/problems/kth-smallest-element-in-a-bst/solution/}{230. Kth Smallest Element in a BST}
+
+  \section{Sliding Window}
+  Use two pointers and keep sliding the right pointer, examining the new character and updating the count table. Once a condition (usually duplicate) is found, start removing elements from the left pointer, shortening the window.\\
+  \href{https://leetcode.com/problems/minimum-window-substring/description/}{76. Minimum Window Substring}
+  \begin{lstlisting}
+  public String minWindow(String s, String t) {
+    Map<Character, Integer> map = new HashMap();
+    for(char c : t.toCharArray()) {
+      if(map.containsKey(c)) {
+        map.put(c, map.get(c) + 1);
+      } else {
+        map.put(c, 1);
+      }
+    }
+    int left = 0;
+    int right = 0;
+    int slen = s.length();
+    int count = map.size();
+    int len = slen;
+    String ans = s;
+
+    while(end < slen) {
+      char rightChar = s.charAt(right);
+      if(map.containsKey(rightChar)) {
+        map.put(rightChar, map.get(rightChar) - 1);
+        if(map.get(rightChar) == 0) count--;
+      }
+      right++;
+
+      while(count == 0) {
+        if(right - left < len) {        //right++ happened above so indexing is correct
+          len = right - left;
+          ans = s.substring(left, right);
+        }
+        char leftChar = s.charAt(left);
+        if(map.containsKey(leftChar)) {
+          map.put(leftChar, map.get(leftChar) + 1);
+          if(map.get(leftChar) > 0) count++;
+        }
+        left++;
+      }
+    }
+  }
+  \end{lstlisting}
+  \section{Backtracking}
+  \begin{enumerate}[noitemsep]
+    \item Iterate through all possible configurations of search space (permutations or subsets)
+    \item Generate each configuration once by defining a generation order
+    \item At each step, try to extend a partial solution by adding an element. Teest if it's a solution
+      \begin{itemize}[noitemsep]
+        \item if yes then process it
+        \item if no then recurse down and check if it is a partial solution
+      \end{itemize}
+    \item Pruning: cut off search if we know it is not part of the solution (e.g. cost $>$ curr min)
+  \end{enumerate}
+  \begin{lstlisting}
+  public List<List<Integer>> subsets(int[] nums) {
+      List<List<Integer>> list = new ArrayList(); //solution array
+      backtrack(list, new ArrayList(), 0, nums);
+      return list;
+  }
+  
+  public void backtrack(List<List<Integer>> list, List<Integer> sublist, int k, int[] nums) {
+      if (isSolution(sublist)) {
+        process(sublist);                        //if sublist is a valid solution, process it
+      }
+      for (int i = k; i < nums.length; i++) {
+          sublist.add(nums[i]);                  //extend partial solution
+          backtrack(list, sublist, i + 1, nums); //recurse down
+          sublist.remove(sublist.size() - 1);    //remove extension
+      }
+  }
+  \end{lstlisting}
+  \section{Dynamic Programming}
+  Solves by combining optimal solutions to subproblems that overlap. Divide and conquer only work for disjoint sets otherwise there's a lot of repetitive recursive calls. Howeever, dynamic programming uses additional memory to save subproblem solutions so there is a time-memory tradeoff. 
+  \begin{enumerate}[noitemsep]
+    \item Characterize structure of optimal solution 
+    \item Recursively define value of optimal solution 
+    \item Compute value of optimal solution (usually bottom-up approach)
+    \item Construct optimal solution from computed info
+  \end{enumerate}
+  Two approaches to dynamic programming:
+  \begin{itemize}[noitemsep]
+    \item Top-down with memoization: write the procedure recurisvely but saves result of each subproblem in an array. The procedure will first check to see if the array has the solution to the subproblem; if not then the value is computed normally.
+    \item Bottom-up: intuition is to sort by subproblem size and solve them in size order (smallest first). When solving a particular subproblem, we have already saved the solutions to the smaller subproblems.
+  \end{itemize}
+  Look for an optimal substructure: optimal solution requires optimal solution to subproblems
+  \begin{itemize}[noitemsep]
+    \item Solution consists of making a choice
+    \item Assume given choice leads to optimal solutino 
+    \item determine which subproblems occur
+    \item show solutions to subproblems used within optimal solution must also be optimal
+  \end{itemize}
+  Dynamic Programming makes choice at each step based on solutions to sub problems so we do bottom-up approach, using best subproblems to solve later problems or top-down with memoization. In both cases, we always end up solving the smaller subproblems then solving bigger ones.
+  \section{Greedy Algorithm}
+  \textbf{Greedy Choice Property: }Idea is to make locally optimal choices in hopes that it will lead to a globally optimal solution.
+  \begin{itemize}[noitemsep]
+    \item Determine optimal substructure
+    \item Develop recursive solution 
+    \item Show if we make greedy choice, only one subproblem remains
+    \item Prove it's safe to make greedy choice
+    \item Develop recursive algorithm for greedy choice
+    \item Convert recursive greedy to iterative
+  \end{itemize}
+  We want to make greedy choice then solve the subproblems that remain. This is usually a top-down approach where one greedy choice is made after another, reducing the size of the problem
+\end{document}
