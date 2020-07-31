@@ -138,30 +138,28 @@
   \begin{lstlisting}
   public String minWindow(String s, String t) {
     Map<Character, Integer> map = new HashMap();
+    // populate hashmap with character frequencies
     for(char c : t.toCharArray()) {
-      if(map.containsKey(c)) {
-        map.put(c, map.get(c) + 1);
-      } else {
-        map.put(c, 1);
-      }
+      if(map.containsKey(c))  map.put(c, map.get(c) + 1);
+      else map.put(c, 1);
     }
     int left = 0;
     int right = 0;
     int slen = s.length();
-    int count = map.size();
-    int len = slen;
+    int count = map.size();   // used to check how many characters still need to be processed
+    int len = slen;           // length of answer string
     String ans = s;
 
-    while(end < slen) {
+    while(right < slen) {
       char rightChar = s.charAt(right);
       if(map.containsKey(rightChar)) {
         map.put(rightChar, map.get(rightChar) - 1);
         if(map.get(rightChar) == 0) count--;
       }
       right++;
-
       while(count == 0) {
-        if(right - left < len) {        //right++ happened above so indexing is correct
+        // normally is  right - left + 1 but right++ happened above so indexing is correct
+        if(right - left < len) {
           len = right - left;
           ans = s.substring(left, right);
         }
@@ -173,8 +171,10 @@
         left++;
       }
     }
+    return ans;
   }
   \end{lstlisting}
+  \href{https://leetcode.com/problems/find-all-anagrams-in-a-string/description/}{438. Find All Anagrams in a String} \quad \href{https://leetcode.com/problems/substring-with-concatenation-of-all-words/description/}{30. Substring with Concatenation of All Words} \quad \href{https://leetcode.com/problems/longest-substring-without-repeating-characters/}{3. Longest Substring Without Repeating Characters} \quad \href{https://leetcode.com/problems/longest-substring-with-at-most-two-distinct-characters/}{159. Longest Substring with At Most Two Distinct Characters} \quad \href{https://leetcode.com/problems/permutation-in-string/description/}{567. Permutation in String}
   \section{Backtracking}
   \begin{enumerate}[noitemsep]
     \item Iterate through all possible configurations of search space (permutations or subsets)
