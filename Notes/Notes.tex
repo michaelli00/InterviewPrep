@@ -70,7 +70,7 @@
     }
   }
   \end{lstlisting}
-  For graphs, need to figure out to use visited array to match requirements\\
+  For graphs, need to figure out how to use visited array to match requirements\\
   \href{https://leetcode.com/problems/number-of-connected-components-in-an-undirected-graph/}{323. Number of Connected Components in an Undirected Graph
 } \quad \href{https://leetcode.com/problems/number-of-islands/}{200. Number of Islands
 } \quad \href{https://leetcode.com/problems/friend-circles/description/}{547. Friend Circles
@@ -179,7 +179,7 @@
   \begin{enumerate}[noitemsep]
     \item Iterate through all possible configurations of search space (permutations or subsets)
     \item Generate each configuration once by defining a generation order
-    \item At each step, try to extend a partial solution by adding an element. Teest if it's a solution
+    \item At each step, try to extend a partial solution by adding an element. Test if it's a solution
       \begin{itemize}[noitemsep]
         \item if yes then process it
         \item if no then recurse down and check if it is a partial solution
@@ -204,6 +204,8 @@
       }
   }
   \end{lstlisting}
+  \href{https://leetcode.com/problems/subsets/description/}{78. Subsets
+} \quad \href{https://leetcode.com/problems/subsets-ii/description/}{90. Subsets II} \quad \href{https://leetcode.com/problems/combination-sum/description/}{39. Combination Sum} \quad \href{https://leetcode.com/problems/combination-sum-ii/description/}{40. Combination Sum II} \quad \href{https://leetcode.com/problems/n-queens/description/}{51. N-Queens}
   \section{Dynamic Programming}
   Solves by combining optimal solutions to subproblems that overlap. Divide and conquer only work for disjoint sets otherwise there's a lot of repetitive recursive calls. Howeever, dynamic programming uses additional memory to save subproblem solutions so there is a time-memory tradeoff. 
   \begin{enumerate}[noitemsep]
@@ -236,4 +238,70 @@
     \item Convert recursive greedy to iterative
   \end{itemize}
   We want to make greedy choice then solve the subproblems that remain. This is usually a top-down approach where one greedy choice is made after another, reducing the size of the problem
+  \section{Miscellaneous}
+  \subsection{Java For Each Loop on Map}
+  \begin{lstlisting}
+  for(Map.Entry<Key, Value> e : map.entrySet()) {
+    e.getKey();
+    e.getValue();
+  }
+  \end{lstlisting}
+  \subsection{Implementing Java Comparator}
+  \begin{lstlisting}
+  Set<String> set = new TreeSet(new Comparator<String>() {
+    @Override
+    public int compare(String s1, String s2) {
+      return s1.compareTo(s2);
+    }
+  });
+  \end{lstlisting}
+  \subsection{Linked List Dummy Head}
+  Using dummy head node avoids having to prepopulating the head with a value prior to iterating through the linked list. At the end just return dummy.next. \href{https://leetcode.com/problems/merge-two-sorted-lists/}{21. Merge Two Sorted Lists
+}
+  \begin{lstlisting}
+  public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+    ListNode dummy = new ListNode(0);
+    ListNode curr = dummy;
+    while(l1 != null && l2 != null) {
+        if(l1.val < l2.val) {
+            curr.next = new ListNode(l1.val);
+            l1 = l1.next;
+        } else {
+            curr.next = new ListNode(l2.val);
+            l2 = l2.next;
+        }
+        curr = curr.next;
+    }
+    if(l1 != null) {
+        curr.next = l1;
+    }
+    if(l2 != null) {
+        curr.next = l2;
+    }
+    return dummy.next;
+  }
+  \end{lstlisting}
+  \subsection{Modified Binary Search}
+  Returns the target index by finding the left neighbor's index then returning mid + 1.
+  \begin{lstlisting}
+  //find target by finding the element to the left of target then do index + 1.
+  public int modifiedBS(int[], int l, int r, int target) {
+    int left = l;
+    int right = r;
+    while(left <= right) {
+      int mid = (left + right) / 2;
+      if(nums[mid + 1] == target) {
+        return mid + 1;
+      }
+      if(nums[mid] > target) {
+        right = mid - 1;
+      } else {
+        left = mid + 1;
+      }
+    }
+  }
+  \end{lstlisting}
+  \href{https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array/}{34. Find First and Last Position of Element in Sorted Array} \quad \href{https://leetcode.com/problems/search-in-rotated-sorted-array/submissions/}{33. Search in Rotated Sorted Array}
+  \subsection{Trie}
+
 \end{document}

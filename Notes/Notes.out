@@ -7,3 +7,9 @@
 \BOOKMARK [1][-]{section.5}{Backtracking}{}% 7
 \BOOKMARK [1][-]{section.6}{Dynamic Programming}{}% 8
 \BOOKMARK [1][-]{section.7}{Greedy Algorithm}{}% 9
+\BOOKMARK [1][-]{section.8}{Miscellaneous}{}% 10
+\BOOKMARK [2][-]{subsection.8.1}{Java For Each Loop on Map}{section.8}% 11
+\BOOKMARK [2][-]{subsection.8.2}{Implementing Java Comparator}{section.8}% 12
+\BOOKMARK [2][-]{subsection.8.3}{Linked List Dummy Head}{section.8}% 13
+\BOOKMARK [2][-]{subsection.8.4}{Modified Binary Search}{section.8}% 14
+\BOOKMARK [2][-]{subsection.8.5}{Trie}{section.8}% 15
